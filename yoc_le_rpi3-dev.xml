@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <!-- Include stable base -->
+  <include name="yoc_le_rpi3.xml" />
+  
+  <!-- Override your layers to track development branches -->
+  <remove-project name="meta-legato" />
+  <remove-project name="meta-vsntele" />
+  <remove-project name="vsntele" />
+  
+  <!-- Use development branches -->
+  <project name="meta-legato"
+           path="sources/meta-legato"
+           remote="vsnam"
+           revision="refs/heads/develop"
+           upstream="develop" />
+  
+  <project name="meta-vsntele"
+           path="sources/meta-vsntele"
+           remote="vsnam"
+           revision="refs/heads/develop"
+           upstream="develop" />
+  
+  <project name="vsntele"
+           path="apps/vsntele"
+           remote="vsnam"
+           revision="refs/heads/tcu_dev"
+           upstream="tcu_dev" />
+</manifest>
