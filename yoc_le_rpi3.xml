@@ -8,222 +8,131 @@
   
   Usage:
     repo init -u https://github.com/vsnam19/vsntele_manifest.git -b master -m yoc_le_rpi3.xml
-    repo sync
+    repo sync -j$(nproc)
     
   Maintainer: vsnam19
   Last Updated: 2025-11-29
 -->
 <manifest>
 
-    <!-- ================================================================== -->
-    <!-- REMOTE DEFINITIONS                                                  -->
-    <!-- ================================================================== -->
+  <!-- ================================================================== -->
+  <!-- REMOTE DEFINITIONS                                                  -->
+  <!-- ================================================================== -->
+  
+  <remote name="yocto"
+          fetch="https://git.yoctoproject.org/git" />
+  
+  <remote name="openembedded"
+          fetch="https://github.com/openembedded" />
+  
+  <remote name="agherzan"
+          fetch="https://github.com/agherzan" />
+  
+  <remote name="vsnam"
+          fetch="https://github.com/vsnam19" />
+  
+  <remote name="legato"
+          fetch="https://github.com/legatoproject" />
 
-    <remote name="yocto"
-        fetch="https://git.yoctoproject.org/git"
-        review="https://git.yoctoproject.org" />
+  <!-- ================================================================== -->
+  <!-- DEFAULT SETTINGS                                                    -->
+  <!-- ================================================================== -->
+  
+  <default remote="yocto"
+           sync-j="4"
+           sync-c="true"
+           sync-tags="false" />
 
-    <remote name="yocto-github"
-        fetch="https://github.com/yoctoproject" />
+  <!-- ================================================================== -->
+  <!-- YOCTO CORE - KIRKSTONE LTS (4.0.20)                                -->
+  <!-- ================================================================== -->
+  
+  <project name="poky"
+           path="sources/poky"
+           remote="yocto"
+           revision="refs/tags/yocto-4.0.20"
+           upstream="kirkstone" />
 
-    <remote name="openembedded"
-        fetch="https://github.com/openembedded" />
-
-    <remote name="vsnam"
-        fetch="https://github.com/vsnam19" />
-
-    <remote name="legato"
-        fetch="https://github.com/legatoproject" />
-
-    <!-- ================================================================== -->
-    <!-- DEFAULT SETTINGS                                                    -->
-    <!-- ================================================================== -->
-
-    <default remote="yocto"
-        sync-j="4"
-        sync-c="true"
-        sync-tags="false" />
-
-    <!-- ================================================================== -->
-    <!-- YOCTO CORE - KIRKSTONE LTS (4.0.20)                                -->
-    <!-- ================================================================== -->
-
-    <!-- Poky - Yocto reference distribution -->
-    <project name="poky"
-        path="sources/poky"
-        remote="yocto"
-        revision="refs/tags/yocto-4.0.20"
-        upstream="kirkstone" />
-
-    <!-- ================================================================== -->
-    <!-- OPENEMBEDDED LAYERS                                                -->
-    <!-- ================================================================== -->
-
-    <!-- Meta-OpenEmbedded - Essential additional layers -->
-    <!-- Commit from kirkstone branch, April 2024, compatible with Yocto 4.0.20 -->
+  <!-- ================================================================== -->
+  <!-- OPENEMBEDDED LAYERS                                                -->
+  <!-- ================================================================== -->
+  
     <project name="meta-openembedded"
-        path="sources/meta-openembedded"
-        remote="openembedded"
-        revision="b9e17a91c44e6a18cfe370dac999fe65c69ce0cd"
-        upstream="kirkstone">
-        <!-- Contains sublayers:
-         - meta-oe: Core additional recipes
-         - meta-python: Python support
-         - meta-networking: Advanced networking
-         - meta-filesystems: Special filesystems
-         - meta-multimedia: Audio/Video support
-         - meta-webserver: Web servers
-         - meta-perl: Perl support
-    -->
-    </project>
+            path="sources/meta-openembedded"
+            remote="openembedded"
+            revision="kirkstone"
+            upstream="kirkstone" />
 
-    <!-- ================================================================== -->
-    <!-- BSP LAYERS - RASPBERRY PI                                          -->
-    <!-- ================================================================== -->
+  <!-- ================================================================== -->
+  <!-- BSP LAYERS - RASPBERRY PI                                          -->
+  <!-- ================================================================== -->
+  
+  <!-- Meta-RaspberryPi - Official Raspberry Pi BSP -->
+  <project name="meta-raspberrypi"
+           path="sources/meta-raspberrypi"
+           remote="agherzan"
+           revision="kirkstone"
+           upstream="kirkstone" />
 
-    <!-- Meta-RaspberryPi - Official Raspberry Pi BSP -->
-    <!-- Note: meta-raspberrypi doesn't use release tags, tracking kirkstone branch -->
-    <project name="meta-raspberrypi"
-        path="sources/meta-raspberrypi"
-        remote="yocto-github"
-        revision="kirkstone"
-        upstream="kirkstone">
-        <!-- Provides:
-         - Machine configs for all RPi variants (raspberrypi3, raspberrypi3-64, etc.)
-         - Boot firmware (bootfiles)
-         - Kernel support
-         - GPU drivers and utilities
-         - Hardware-specific configurations
-    -->
-    </project>
+  <!-- ================================================================== -->
+  <!-- LEGATO FRAMEWORK                                                   -->
+  <!-- ================================================================== -->
+  
+  <project name="legato-af"
+           path="legato/legato-af"
+           remote="legato"
+           revision="refs/tags/21.05.0"
+           upstream="master" />
 
-    <!-- ================================================================== -->
-    <!-- LEGATO FRAMEWORK                                                   -->
-    <!-- ================================================================== -->
+  <!-- Meta-SWI - Sierra Wireless meta-layer (REFERENCE ONLY) -->
+  <project name="meta-swi"
+           path="sources/meta-swi-reference"
+           remote="legato"
+           revision="yocto-3.0-ref"
+           upstream="yocto-3.0-ref"
+           groups="reference" />
 
-    <!-- Legato Application Framework -->
-    <!-- Using latest stable release 21.05.0 (supports Yocto 3.0) -->
-    <project name="legato-af"
-        path="legato/legato-af"
-        remote="legato"
-        revision="refs/tags/21.05.0"
-        upstream="master">
-        <!-- Legato Application Framework provides:
-         - IPC framework
-         - Application sandboxing
-         - Over-the-air updates
-         - Supervisor
-         - Platform services APIs
-    -->
-    </project>
+  <!-- ================================================================== -->
+  <!-- CUSTOM LAYERS - VSNTELE PROJECT                                    -->
+  <!-- ================================================================== -->
+  
+  <project name="meta-legato"
+           path="sources/meta-legato"
+           remote="vsnam"
+           revision="refs/heads/master"
+           upstream="master" />
+  
+  <project name="meta-vsntele"
+           path="sources/meta-vsntele"
+           remote="vsnam"
+           revision="refs/heads/master"
+           upstream="master" />
 
-    <!-- Meta-SWI - Sierra Wireless meta-layer (REFERENCE ONLY) -->
-    <!-- Optional: Use as reference for Legato integration patterns -->
-    <project name="meta-swi"
-        path="sources/meta-swi-reference"
-        remote="legato"
-        revision="yocto-3.0-ref"
-        upstream="yocto-3.0-ref"
-        groups="reference">
-        <!-- This is for REFERENCE only - shows how Sierra Wireless
-         integrates Legato with Yocto. You'll create your own
-         meta-legato layer based on patterns from here.
-         
-         Not added to bblayers.conf by default.
-    -->
-    </project>
+  <!-- ================================================================== -->
+  <!-- APPLICATION SOURCE CODE                                            -->
+  <!-- ================================================================== -->
+  
+  <!-- VSNTele Application - Using master branch until tcu_dev is created -->
+  <project name="vsntele"
+           path="apps/vsntele"
+           remote="vsnam"
+           revision="refs/heads/master"
+           upstream="master" />
 
-    <!-- ================================================================== -->
-    <!-- CUSTOM LAYERS - VSNTELE PROJECT                                    -->
-    <!-- ================================================================== -->
-
-    <!-- Meta-Legato - Custom Legato integration layer for RPi -->
-    <project name="meta-legato"
-        path="sources/meta-legato"
-        remote="vsnam"
-        revision="refs/heads/master"
-        upstream="master">
-        <!-- To be created - Contains:
-         - recipes-core/legato/legato-af_*.bb (build Legato)
-         - recipes-kernel/linux/linux-raspberrypi_%.bbappend (kernel configs for Legato)
-         - recipes-core/images/legato-image.bb (base image with Legato)
-         - conf/layer.conf
-         - README.md
-    -->
-    </project>
-
-    <!-- Meta-VSNTele - Application and distribution layer -->
-    <!-- Your main application layer with distro configs -->
-    <project name="meta-vsntele"
-        path="sources/meta-vsntele"
-        remote="vsnam"
-        revision="refs/heads/master"
-        upstream="master">
-        <!-- Contains:
-         - conf/distro/vsntele-distro.conf (custom distro)
-         - conf/machine/*.conf (optional custom machine configs)
-         - recipes-apps/vsntele/vsntele-app_*.bb (your Legato app)
-         - recipes-core/images/vsntele-image-*.bb (final images)
-         - recipes-support/* (additional utilities)
-         - conf/layer.conf
-         - README.md
-    -->
-    </project>
-
-    <!-- ================================================================== -->
-    <!-- APPLICATION SOURCE CODE                                            -->
-    <!-- ================================================================== -->
-
-    <!-- VSNTele Application -->
-    <!-- Your main application source code repository -->
-    <project name="vsntele"
-        path="apps/vsntele"
-        remote="vsnam"
-        revision="refs/heads/tcu_dev"
-        upstream="tcu_dev">
-    </project>
-
-    <!-- ================================================================== -->
-    <!-- OPTIONAL LAYERS - Uncomment as needed                              -->
-    <!-- ================================================================== -->
-
-    <!-- Meta-Security - Security hardening -->
-    <project name="meta-security"
-        path="sources/meta-security"
-        remote="yocto"
-        revision="kirkstone"
-        upstream="kirkstone"
-        groups="security">
-    </project>
-
-
-    <!-- Meta-Virtualization - Container support (Docker, LXC) -->
-    <project name="meta-virtualization"
-        path="sources/meta-virtualization"
-        remote="yocto"
-        revision="kirkstone"
-        upstream="kirkstone"
-        groups="containers">
-    </project>
-
-
-    <!-- ================================================================== -->
-    <!-- BUILD SCRIPTS AND CONFIGURATION TEMPLATES                          -->
-    <!-- ================================================================== -->
-
-    <!-- Copy setup script to project root for easy access -->
-    <copyfile src="sources/meta-vsntele/scripts/setup-environment.sh"
-        dest="setup-environment.sh" />
-
-    <!-- Link to Yocto environment init script -->
-    <linkfile src="sources/poky/oe-init-build-env"
-        dest="oe-init-build-env" />
-
-    <!-- Copy initial build configuration templates -->
-    <copyfile src="sources/meta-vsntele/conf/templates/local.conf.sample"
-        dest="conf-templates/local.conf.sample" />
-
-    <copyfile src="sources/meta-vsntele/conf/templates/bblayers.conf.sample"
-        dest="conf-templates/bblayers.conf.sample" />
+  <!-- ================================================================== -->
+  <!-- BUILD SCRIPTS AND CONFIGURATION TEMPLATES                          -->
+  <!-- ================================================================== -->
+  
+  <copyfile src="sources/meta-vsntele/scripts/setup-environment.sh"
+            dest="setup-environment.sh" />
+  
+  <linkfile src="sources/poky/oe-init-build-env"
+            dest="oe-init-build-env" />
+  
+  <copyfile src="sources/meta-vsntele/conf/templates/local.conf.sample"
+            dest="conf-templates/local.conf.sample" />
+  
+  <copyfile src="sources/meta-vsntele/conf/templates/bblayers.conf.sample"
+            dest="conf-templates/bblayers.conf.sample" />
 
 </manifest>
